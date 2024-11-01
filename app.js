@@ -36,7 +36,9 @@ app.use((req, res, next) => {
 
 // Initialize the WebSocket handling logic
 handleSocketConnection(io);
-
+app.route("/",(req,res)=>{
+  res.send("Welcome to the server")
+})
 // Routes
 app.use("/oauth", authRouter);
 app.use("/file", fileRouter);
