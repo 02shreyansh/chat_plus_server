@@ -27,7 +27,9 @@ app.use(cors());
 const server = http.createServer(app);
 
 const io = socketIo(server, { cors: { origin: "*" } });
-
+app.get("/",(req,res)=>{
+  res.send("Welcome to the server")
+})
 // Attach the WebSocket instance to the request object
 app.use((req, res, next) => {
   req.io = io;
@@ -36,9 +38,7 @@ app.use((req, res, next) => {
 
 // Initialize the WebSocket handling logic
 handleSocketConnection(io);
-app.route("/",(req,res)=>{
-  res.send("Welcome to the server")
-})
+
 // Routes
 app.use("/oauth", authRouter);
 app.use("/file", fileRouter);
@@ -50,6 +50,7 @@ app.use("/device-token", authMiddleware, deviceRouter);
 // Middleware
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
+
 
 const start = async () => {
   try {
