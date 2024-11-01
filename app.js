@@ -1,6 +1,6 @@
 require("dotenv").config();
 require("express-async-errors");
-const cors=require("cors")
+const cors = require("cors");
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
@@ -26,10 +26,19 @@ app.use(cors());
 
 const server = http.createServer(app);
 
+// Set server keep-alive and headers timeout
+server.keepAliveTimeout = 120 * 1000; // 120 seconds
+server.headersTimeout = 120 * 1000;   // 120 seconds
+
+// Ensure the host is bound to 0.0.0.0 to allow external access
+const HOST = process.env.HOST || "0.0.0.0";
+const PORT = process.env.PORT || 3000;
+
 const io = socketIo(server, { cors: { origin: "*" } });
-app.get("/",(req,res)=>{
-  res.send("Welcome to the server")
-})
+app.get("/", (req, res) => {
+  res.send("Welcome to the server");
+});
+
 // Attach the WebSocket instance to the request object
 app.use((req, res, next) => {
   req.io = io;
@@ -51,16 +60,11 @@ app.use("/device-token", authMiddleware, deviceRouter);
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
-
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-    server.listen(process.env.PORT || 3000, () =>
-      console.log(
-        `HTTP server is running on port http://localhost:${
-          process.env.PORT || 3000
-        }`
-      )
+    server.listen(PORT, HOST, () =>
+      console.log(`HTTP server is running on http://${HOST}:${PORT}`)
     );
   } catch (error) {
     console.log(error);
