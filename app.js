@@ -27,8 +27,7 @@ app.use(cors());
 const server = http.createServer(app);
 
 // Set server keep-alive and headers timeout
-server.keepAliveTimeout = 120 * 1000; // 120 seconds
-server.headersTimeout = 120 * 1000;   // 120 seconds
+
 
 // Ensure the host is bound to 0.0.0.0 to allow external access
 const HOST = process.env.HOST || "0.0.0.0";
